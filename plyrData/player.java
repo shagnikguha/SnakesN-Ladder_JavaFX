@@ -25,15 +25,25 @@ public class player {
         int dice = obj.throwDice();
         
         int currentLoc = position;
-        int newLoc = dice+position;
+        int newLoc = dice + position;
         
-        int result = co1.check(newLoc);
-        
-        if(result != -1){
-           position = result;
-        } else{
-           position = newLoc;
+        try {
+            int result = co1.check(newLoc);
+
+            if (result != -1) {
+                position = result;
+            } else {
+                if (newLoc > 100) {
+                    throw new Exception("Invalid move: newLoc exceeds 100");
+                }
+                position = newLoc;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            position = currentLoc; 
         }
+
         return dice;
     }
+
 }
