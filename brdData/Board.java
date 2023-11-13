@@ -37,4 +37,16 @@ public class Board {
                 return -1;
         }
     }
+    public int isSL(int i, int x) {
+    	// i = player location
+    	// x = result of check, i.e final position after snake or ladder
+    	if(x==-1) {
+    		return -1;
+    	}
+    	if(i>x) {
+    		return 1;   // if current location is bigger than final then it is a snake
+    	} else {
+    		return 2;   // else it is a ladder
+    	}
+    }
 }
