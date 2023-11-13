@@ -2,11 +2,15 @@ package terminalc;
 
 import java.util.*;
 import plyrData.player;
+import brdData.Board;
+import plyrData.Dice;
 
 public class Main {
     public static void main(String[] args) {
-        player player1 = new player("Alice");
-        player player2 = new player("Bob");
+    	Dice d = new Dice();
+    	Board board = new Board();
+    	player<Dice, Board> player1 = new player<>("Alice", d, board);
+    	player<Dice, Board> player2 = new player<>("Bob", d, board);
         int dice = 0;
 
         Scanner scanner = new Scanner(System.in);
@@ -43,5 +47,7 @@ public class Main {
             turn++;
             
         }
+        scanner.close();
     }
 }
+
