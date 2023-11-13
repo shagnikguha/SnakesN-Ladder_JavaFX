@@ -11,12 +11,15 @@ import javafx.scene.text.*;
 import javafx.scene.paint.Color;
 
 import plyrData.player;
+import plyrData.Dice;
 import brdData.Board;
 
 public class Main extends Application {
-    private player player1;
-    private player player2;
+	
+    player<Dice, Board> player1;
+    player<Dice, Board> player2;
     private Board board;
+    private Dice dice;
     private int turn;
     private TextArea player1InfoTextArea;
     private TextArea player2InfoTextArea;
@@ -29,10 +32,11 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-        player1 = new player("P1");
-        player2 = new player("P2");
+        this.primaryStage = primaryStage;;
         board = new Board();
+        dice = new Dice();
+        player1 = new player<>("P1", dice, board);
+        player2 = new player<>("P2", dice, board);
         turn = 1;
 
         primaryStage.setTitle("Snakes and Ladders Game");
