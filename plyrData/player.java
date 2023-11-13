@@ -2,15 +2,17 @@ package plyrData;
 
 import brdData.*;
 
-public class player {
+public class player<T extends Dice, U extends Board> {
     private String name;
     private int position;
-    Dice obj = new Dice();
-    Board co1 = new Board();
-    
-    public player(String name) {
+    private T obj;  // Dice object
+    private U co1;  // Board object
+
+    public player(String name, T obj, U co1) {
         this.name = name;
         this.position = 0;
+        this.obj = obj;
+        this.co1 = co1;
     }
 
     public String getName() {
@@ -23,10 +25,10 @@ public class player {
 
     public int move() {
         int dice = obj.throwDice();
-        
+
         int currentLoc = position;
         int newLoc = dice + position;
-        
+
         try {
             int result = co1.check(newLoc);
 
@@ -40,10 +42,9 @@ public class player {
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            position = currentLoc; 
+            position = currentLoc;
         }
 
         return dice;
     }
-
 }
