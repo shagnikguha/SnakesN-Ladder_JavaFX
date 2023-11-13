@@ -7,12 +7,16 @@ import javafx.scene.Scene;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.geometry.Pos;
+import javafx.scene.text.*;
+import javafx.scene.paint.Color;
 
 import plyrData.player;
+import brdData.Board;
 
 public class Main extends Application {
     private player player1;
     private player player2;
+    private Board board;
     private int turn;
     private TextArea player1InfoTextArea;
     private TextArea player2InfoTextArea;
@@ -21,13 +25,14 @@ public class Main extends Application {
     private ProgressBar player1ProgressBar;
     private ProgressBar player2ProgressBar;
     private Stage primaryStage;
-    private TextArea playerMovementTextArea;
+    private TextFlow playerMovementTextArea;
 
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         player1 = new player("P1");
         player2 = new player("P2");
+        board = new Board();
         turn = 1;
 
         primaryStage.setTitle("Snakes and Ladders Game");
@@ -86,10 +91,9 @@ public class Main extends Application {
         playerInfoPanel.getChildren().addAll(player1Panel, player2Panel);
         root.setCenter(playerInfoPanel);
 
-        playerMovementTextArea = new TextArea();
-        playerMovementTextArea.setEditable(false);
-        playerMovementTextArea.setPrefRowCount(10);
-        playerMovementTextArea.setPrefColumnCount(10);
+        playerMovementTextArea = new TextFlow();
+        playerMovementTextArea.setPrefWidth(150);
+        playerMovementTextArea.setPrefHeight(150);
 
         VBox gameBoardPanel = new VBox(10);
         gameBoardPanel.setAlignment(Pos.TOP_CENTER);
@@ -130,23 +134,42 @@ public class Main extends Application {
 
         player1ProgressBar.setProgress(player1.getPosition() / 100.0);
         player2ProgressBar.setProgress(player2.getPosition() / 100.0);
+        
+        playerMovementTextArea.getChildren().clear();
 
-        playerMovementTextArea.clear();
         for (int i = 1; i <= 100; i++) {
+            Text cellText = new Text();
+
             if (i == currentPlayer.getPosition()) {
-                playerMovementTextArea.appendText(currentPlayer.getName());
+                cellText.setText(currentPlayer.getName());
+                cellText.setFill(Color.ORANGE);
             } else if (i == otherPlayer.getPosition()) {
-                playerMovementTextArea.appendText(otherPlayer.getName());
+                cellText.setText(otherPlayer.getName());
+                cellText.setFill(Color.GREEN);
+            } else if ((board.isSL(i, board.check(i))) == 1) {
+                cellText.setText("_");
+                cellText.setFill(Color.RED); // Set the color for snakes
+            } else if ((board.isSL(i, board.check(i))) == 2) {
+                cellText.setText("_");
+                cellText.setFill(Color.BLUE); // Set the color for ladders
             } else {
-                playerMovementTextArea.appendText("_");
+                cellText.setText("_");
+                cellText.setFill(Color.BLACK);
             }
+
+            cellText.setFont(Font.font(14));
+
+            playerMovementTextArea.getChildren().add(cellText);
+            
             if (i % 10 == 0) {
-                playerMovementTextArea.appendText("\n");
+                playerMovementTextArea.getChildren().add(new Text("\n"));
             } else {
-                playerMovementTextArea.appendText(" ");
+                playerMovementTextArea.getChildren().add(new Text(" "));
             }
+        
         }
 
+        
         if (currentPlayer.getPosition() >= 100) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Game Over");
