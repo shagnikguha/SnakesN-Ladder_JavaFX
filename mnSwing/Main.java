@@ -3,14 +3,16 @@ package mnSwing;
 import javax.swing.*;
 
 import plyrData.player;
+import plyrData.Dice;
+import brdData.Board;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Main extends JFrame {
-    private player player1;
-    private player player2;
+    private player<Dice, Board> player1;
+    private player<Dice, Board> player2;
     private int turn;
     private JTextArea player1InfoTextArea;
     private JTextArea player2InfoTextArea;
@@ -22,10 +24,13 @@ public class Main extends JFrame {
     private JTextArea player2MovementTextArea;
     private JTextField player1NameField; // Declare as instance variables
     private JTextField player2NameField;
-    
+
     public Main() {
-        player1 = new player("P1");
-        player2 = new player("P2");
+        Dice dice = new Dice();
+        Board board = new Board();
+
+        player1 = new player<>("P1", dice, board);
+        player2 = new player<>("P2", dice, board);
         turn = 1;
 
         setLayout(new BorderLayout());
@@ -85,14 +90,14 @@ public class Main extends JFrame {
         progressPanel.add(player1MovementTextArea); // Add player1's movement text area
         progressPanel.add(player2ProgressBar);
         progressPanel.add(player2MovementTextArea); // Add player2's movement text area
-        
+
         inputPanel.setBackground(Color.LIGHT_GRAY);
         progressPanel.setBackground(Color.DARK_GRAY);
         player1InfoTextArea.setForeground(Color.BLUE);
         player2InfoTextArea.setForeground(Color.GREEN);
         player1MovementTextArea.setForeground(Color.RED);
         player2MovementTextArea.setForeground(Color.MAGENTA);
-        
+
         add(inputPanel, BorderLayout.NORTH);
         add(splitPane, BorderLayout.CENTER); // Add the split pane
         add(dicePanel, BorderLayout.SOUTH);
@@ -116,7 +121,7 @@ public class Main extends JFrame {
         setVisible(true);
     }
 
-    private void playTurn(player currentPlayer, String playerNameFieldText, String playerLabel, JTextArea playerInfoTextArea, JTextArea playerMovementTextArea) {
+    private void playTurn(player<Dice, Board> currentPlayer, String playerNameFieldText, String playerLabel, JTextArea playerInfoTextArea, JTextArea playerMovementTextArea) {
         // Clear the player info and movement areas
         playerInfoTextArea.setText("Turn " + turn + "\n");
         playerInfoTextArea.append(playerLabel + "'s turn. Rolling the dice...\n");
@@ -150,10 +155,10 @@ public class Main extends JFrame {
         if (currentPlayer.getPosition() >= 100) {
             // Player wins, show a pop-up message with replay and close options
             int option = JOptionPane.showOptionDialog(this, playerLabel + " wins!", "Game Over", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Replay", "Close"}, "Replay");
-            
+
             if (option == JOptionPane.YES_OPTION) {
                 // Replay the game
-                resetGame(); // You'll need to implement this method to reset the game
+                resetGame();
             } else {
                 // Close the application
                 System.exit(0);
@@ -163,13 +168,16 @@ public class Main extends JFrame {
 
     // Add a method to reset the game
     private void resetGame() {
-    	// Clear player names
+        // Clear player names
         player1NameField.setText("");
         player2NameField.setText("");
-    	
+
         // Reset player positions and any other game state variables
-        player1 = new player("P1");
-        player2 = new player("P2");
+        Dice dice = new Dice();
+        Board board = new Board();
+
+        player1 = new player<>("P1", dice, board);
+        player2 = new player<>("P2", dice, board);
 
         // Clear JTextAreas, progress bars, and movement text areas
         player1InfoTextArea.setText("");
@@ -183,13 +191,14 @@ public class Main extends JFrame {
         // Enable the rollButton
         rollButton.setEnabled(true);
     }
+
     public static void main(String[] args) {
-          SwingUtilities.invokeLater(new Runnable() {
-        	  @Override
-	          public void run() {
-	              new Main();
-	          }
-	      });
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new Main();
+            }
+        });
     }
 }
 
